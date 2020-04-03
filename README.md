@@ -17,6 +17,9 @@
     - [Index Signature](#index-signature)
     - [Call Signature](#call-signature)
     - [Construct Signature](#construct-signature)
+  - [Type Literal Syntax](#type-literal-syntax)
+  - [Excess Properties](#excess-properties)
+  - [`interface` vs `type`](#interface-vs-type)
 
 # Typing Objects
 
@@ -176,6 +179,197 @@ const clockClassDeclaration = createClock(ClockB, 12, 17)
 ```
 
 **[Typescript Docs - Class Type](https://www.typescriptlang.org/docs/handbook/interfaces.html#class-types)**
+
+## Type Literal Syntax
+
+Typically used in the signature of a higher-order function but it's not limited too.
+
+```ts
+type Point = {
+  x: number
+  y: number
+}
+
+type SetPoint = (x: number, y: number) => void
+```
+
+## Excess Properties
+
+- Engineers **can’t** just think of interfaces as “objects that have exactly a
+  set of properties” or “objects that have at least a set of properties”.
+  In-line object arguments receive an additional level of validation that
+  doesn’t apply when they’re passed as variables.
+
+- TypeScript is a **structurally** typed language. To create a `Dog` you don’t
+  need to explicitly extend the `Dog` interface, any object with a `breed`
+  property that is of type `string` can be used as a `Dog`:
+
+<!-- end list -->
+
+```ts
+interface Dog {
+  breed: string
+}
+
+function printDog(dog: Dog) {
+  console.log("Dog: " + dog.breed)
+}
+
+const ginger = {
+  breed: "Airedale",
+  age: 3
+}
+
+printDog(ginger) // excess properties are OK!
+
+printDog({ breed: "Airedale", age: 3 }) // ERRORS
+
+/*
+  Argument of type '{ breed: string; age: number }' is not assignable to parameter of type 'Dog'. Object literal may only specify known properties, and 'age' does not exist in type 'Dog'.
+*/
+
+// To get rid of above problem, you can define interface with extra proprty with string index signature
+
+interface Dog {
+  breed: string
+  [propName: string]: any
+}
+
+```
+
+## Interface vs Type
+
+Unlike an **interface** declaration, which always introduces a named `object` type, a **type** alias declaration can introduce a name for any kind of type, including `primitive`, `union`, and `intersection` types. With examples, you can find some in-depth difference between `interface` and `type`.
+
+- `Objects / Functions`
+
+  Both can be used to describe the shape of an object or a function signature. But the syntax differs.
+
+  **Interface**
+
+  ```ts
+    interface Point {
+      x: number
+      y: number
+    }
+
+    interface SetPoint {
+      (x: number, y: number): void
+    }
+  ```
+
+  **Type alias**
+  
+  ```ts
+  type Point = {
+    x: number
+    y: number
+  }
+
+  type SetPoint = (x: number, y: number) => void
+  ```
+
+- `Other Types`
+
+  Unlike an interface, the type alias can also be used for other types such as `primitives`, `unions`, and `tuples` (Aforementioned).
+
+  ```ts
+  // primitive
+  type Name = string
+
+  // object
+  type PartialPointX = { x: number }
+  type PartialPointY = { y: number }
+
+  // union
+  type PartialPoint = PartialPointX | PartialPointY
+
+  // tuple
+  type Data = [number, string]
+
+  ```
+
+- Extend
+
+  Both can be extended, but again, the syntax differs. Additionally, note that an interface and type alias are not mutually exclusive. An interface can extend a type alias, and vice versa.
+
+  **interface extends interface**
+
+  ```ts
+    interface PartialPointX { x: number }
+    interface Point extends PartialPointX { y: number }
+  ```
+
+  **type alias extends type alias**
+
+  ```ts
+    type PartialPointX = { x: number }
+    type Point = PartialPointX & { y: number }
+  ```
+
+  **interface extends type alias**
+
+  ```ts
+    type PartialPointX = { x: number }
+    interface Point extends PartialPointX { y: number }
+  ```
+
+  **type alias extends interface**
+
+  ```ts
+    interface PartialPointX { x: number }
+    type Point = PartialPointX & { y: number }
+  ```
+
+- `Implements`
+
+  A class can implement an interface or type alias, both in the same exact way. Note however that a class and interface are considered static blueprints. Therefore, they can not `implement / extend` a type alias that names a **union type**.
+
+  ```ts
+  interface Point {
+    x: number
+    y: number
+  }
+
+  class SomePoint implements Point {
+    x = 1
+    y = 2
+  }
+
+  type Point2 = {
+    x: number
+    y: number
+  }
+
+  class SomePoint2 implements Point2 {
+    x = 1
+    y = 2
+  }
+
+  type PartialPoint = { x: number } | { y: number }
+
+  // ERROR: can not implement a union type
+  class SomePartialPoint implements PartialPoint {
+    x = 1
+    y = 2
+  }
+  /*
+  A class can only implement an object type or intersection of object types with statically known members.
+  */
+  ```
+
+- `Declaration merging`
+
+  Unlike a type alias, an interface can be defined multiple times, and will be treated as a single interface (with members of all declarations being merged).
+
+  ```ts
+    // These two declarations become:
+    // interface Point { x: number y: number }
+    interface Point { x: number }
+    interface Point { y: number }
+
+    const point: Point = { x: 1, y: 2 }
+  ```
 
 </article>
 
