@@ -23,6 +23,7 @@
 - [Mapped Types - Getting Types from Data](#mapped-types---getting-types-from-data)
   - [`typeof` / `keyof` Examples](#typeof--keyof-examples)
   - [`keyof` with Generics and Interfaces Example](#keyof-with-generics-and-interfaces-example)
+  - [`Lookup` Types](#lookup-types)
 
 # Typing Objects
 
@@ -479,6 +480,25 @@ const due = prop(todo, "due")   // Date
 ```
 
 [Article Link](https://mariusschulz.com/blog/keyof-and-lookup-types-in-typescript)
+
+## Lookup Types
+
+```ts
+interface Person {
+    name: string;
+    age: number;
+    location: string;
+}
+
+type P1 = Person["name"];  // string
+type P2 = Person["name" | "age"];  // string | number
+type P3 = string["charAt"];  // (pos: number) => string
+type P4 = string[]["push"];  // (...items: string[]) => number
+type P5 = string[][0];  // string
+```
+
+[More Read about Mapped Types](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-1.html#mapped-types)
+[More Read about Keyof and Lookup Types](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-1.html#keyof-and-lookup-types)
 
 </article>
 
