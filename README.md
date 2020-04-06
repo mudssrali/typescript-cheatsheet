@@ -20,6 +20,9 @@
   - [Type Literal Syntax](#type-literal-syntax)
   - [Excess Properties](#excess-properties)
   - [`interface` vs `type`](#interface-vs-type)
+- [Mapped Types - Getting Types from Data](#mapped-types---getting-types-from-data)
+  - [`typeof` / `keyof` Examples](#typeof--keyof-examples)
+  - [`keyof` with Generics and Interfaces Example](#keyof-with-generics-and-interfaces-example)
 
 # Typing Objects
 
@@ -225,7 +228,8 @@ printDog(ginger) // excess properties are OK!
 printDog({ breed: "Airedale", age: 3 }) // ERRORS
 
 /*
-  Argument of type '{ breed: string; age: number }' is not assignable to parameter of type 'Dog'. Object literal may only specify known properties, and 'age' does not exist in type 'Dog'.
+  Argument of type '{ breed: string; age: number }' is not assignable to parameter of type 'Dog'.
+  Object literal may only specify known properties, and 'age' does not exist in type 'Dog'.
 */
 
 // To get rid of above problem, you can define interface with extra proprty with string index signature
@@ -370,6 +374,111 @@ Unlike an **interface** declaration, which always introduces a named `object` ty
 
     const point: Point = { x: 1, y: 2 }
   ```
+
+# Mapped Types - Getting Types from Data
+
+## `typeof` / `keyof` Examples
+
+```ts
+const data = {
+  value: 123,
+  text: "text",
+  subData: {
+    value: false
+  }
+}
+
+type Data = typeof data // Data = { value: number; text: string; subData: { value: boolean; } }
+```
+
+```ts
+const data = ["A", "B"] as const
+type Data = typeof data[number] // "A" | "B"
+```
+
+```ts
+const locales = [
+  {
+    locale: "se",
+    language: "Swedish"
+  },
+  {
+    locale: "en",
+    language: "English"
+  }
+] as const
+
+type Locale = typeof locales[number]["locale"]; // "se" | "en"
+```
+
+```ts
+const currencySymbols = {
+  GBP: "£",
+  USD: "$",
+  EUR: "€"
+}
+type CurrencySymbol = keyof typeof currencySymbols; // "GBP" | "USD" | "EUR"
+```
+
+## `keyof` with Generics and Interfaces Example
+
+**Exampl-1**:
+
+```ts
+interface HasPhoneNumber {
+  name: string
+  phone: number
+}
+
+interface HasEmail {
+  name: string
+  email: string
+}
+
+interface CommunicationMethods {
+  email: HasEmail
+  phone: HasPhoneNumber
+  fax: { fax: number }
+}
+
+function contact<K extends keyof CommunicationMethods>(
+  method: K,
+  contact: CommunicationMethods[K] // turning key into value - a mapped type
+) {
+  // do something...
+}
+
+contact("email", { name: "foo", email: "mike@example.com" })
+contact("phone", { name: "foo", phone: 3213332222 })
+contact("fax", { fax: 1231 })
+
+// // we can get all values by mapping through all keys
+type AllCommKeys = keyof CommunicationMethods
+type AllCommValues = CommunicationMethods[keyof CommunicationMethods]
+```
+
+**Exampl-2**:
+
+Let's take a `prop` function
+
+```ts
+function prop<T, K extends keyof T>(obj: T, key: K) {
+  return obj[key]
+}
+
+const todo = {
+  id: 1,
+  text: "Buy milk",
+  due: new Date(2016, 11, 31)
+};
+
+const id = prop(todo, "id")     // number
+const text = prop(todo, "text") // string
+const due = prop(todo, "due")   // Date
+
+```
+
+[Article Link](https://mariusschulz.com/blog/keyof-and-lookup-types-in-typescript)
 
 </article>
 
