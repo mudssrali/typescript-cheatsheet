@@ -24,6 +24,10 @@
   - [`typeof` / `keyof` Examples](#typeof--keyof-examples)
   - [`keyof` with Generics and Interfaces Example](#keyof-with-generics-and-interfaces-example)
   - [`Lookup` Types](#lookup-types)
+- [Optional Chaining](#optional-chaining)
+  - [`?.` returns `undefined` when hitting a `null` or `undefined`](#-returns-undefined-when-hitting-a-null-or-undefined)
+- [Nullish Coalescing](#nullish-coalescing)
+  - [`??` 'fall Backs' to a Default Value When Dealing with `null` or `undefined`](#-fall-backs-to-a-default-value-when-dealing-with-null-or-undefined)
 
 # Typing Objects
 
@@ -495,6 +499,109 @@ type P2 = Person["name" | "age"];  // string | number
 type P3 = string["charAt"];  // (pos: number) => string
 type P4 = string[]["push"];  // (...items: string[]) => number
 type P5 = string[][0];  // string
+```
+
+# Optional Chaining
+
+## `?.` returns `undefined` when hitting a `null` or `undefined`
+
+Album where the artist, and the artists biography might not be present in the
+data.
+
+```ts
+type AlbumAPIResponse = {
+  title: string
+  artist?: {
+    name: string
+    bio?: string
+    previousAlbums?: string[]
+  }
+}
+
+// Instead of:
+const maybeArtistBio = album.artist && album.artist.bio
+
+// ?. acts differently than && on "falsy" values: empty string, 0, NaN, false
+const artistBio = album?.artist?.bio
+
+// optional chaining also works with the [] operators when accessing elements
+// see more example for optional element access below
+const maybeArtistBioElement = album?.["artist"]?.["bio"]
+const maybeFirstPreviousAlbum = album?.artist?.previousAlbums?.[0]
+```
+
+Optional chaining on an optional function:
+
+```ts
+interface OptionalFunction {
+  bar?: () => number
+}
+
+const foo: OptionalFunction = {}
+const bat = foo.bar?.() // number | undefined
+```
+
+- `Optional Element Access`
+
+the *optional element access* which acts similarly to *optional property* accesses, but allows us to access non-identifier properties (e.g. arbitrary strings, numbers, and symbols):
+
+```ts
+/**
+ * Get the first element of the array if we have an array.
+ * Otherwise return undefined.
+ */
+function tryGetFirstElement<T>(arr?: T[]) {
+
+    return arr?.[0]
+
+    // equivalent to
+    //   return (arr === null || arr === undefined) ?
+    //       undefined :
+    //       arr[0]
+}
+```
+
+- Optional Call
+
+*optional call*, which allows us to conditionally call expressions if they’re not `null` or `undefined`.
+
+- Short-circutting
+
+The *short-circuiting* behavior that optional chains have is limited property accesses, calls, element accesses - it doesn’t expand any further out from these expressions.
+
+```ts
+let result = foo?.bar / someComputation()
+// doesn’t stop the division or someComputation() call from occurring. It’s equivalent to
+
+let temp = (foo === null || foo === undefined) ?
+    undefined :
+    foo.bar
+
+let result = temp / someComputation()
+```
+
+# Nullish Coalescing
+
+## `??` “fall Backs” to a Default Value When Dealing with `null` or `undefined`
+
+Value `foo` will be used when it’s “present”; but when it’s `null` or
+`undefined`, calculate `bar()` in its place.
+
+```ts
+let x = foo ?? bar()
+// instead of
+let x = foo !== null && foo !== undefined ? foo : bar()
+```
+
+It can replace uses of `||` when trying to use a default value, and avoids bugs.
+When `localStorage.volume` is set to `0`, the page will set the volume to `0.5`
+which is unintended. `??` avoids some unintended behaviour from `0`, `NaN` and
+`""` being treated as falsy values.
+
+```ts
+function initializeAudio() {
+  let volume = localStorage.volume || 0.5 // Potential bug
+}
 ```
 
 [More Read about Mapped Types](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-1.html#mapped-types)
