@@ -413,7 +413,7 @@ const locales = [
   }
 ] as const
 
-type Locale = typeof locales[number]["locale"]; // "se" | "en"
+type Locale = typeof locales[number]["locale"] // "se" | "en"
 ```
 
 ```ts
@@ -422,7 +422,7 @@ const currencySymbols = {
   USD: "$",
   EUR: "€"
 }
-type CurrencySymbol = keyof typeof currencySymbols; // "GBP" | "USD" | "EUR"
+type CurrencySymbol = keyof typeof currencySymbols // "GBP" | "USD" | "EUR"
 ```
 
 ## `keyof` with Generics and Interfaces Example
@@ -475,7 +475,7 @@ const todo = {
   id: 1,
   text: "Buy milk",
   due: new Date(2016, 11, 31)
-};
+}
 
 const id = prop(todo, "id")     // number
 const text = prop(todo, "text") // string
@@ -489,16 +489,16 @@ const due = prop(todo, "due")   // Date
 
 ```ts
 interface Person {
-    name: string;
-    age: number;
-    location: string;
+    name: string
+    age: number
+    location: string
 }
 
-type P1 = Person["name"];  // string
-type P2 = Person["name" | "age"];  // string | number
-type P3 = string["charAt"];  // (pos: number) => string
-type P4 = string[]["push"];  // (...items: string[]) => number
-type P5 = string[][0];  // string
+type P1 = Person["name"]  // string
+type P2 = Person["name" | "age"]  // string | number
+type P3 = string["charAt"]  // (pos: number) => string
+type P4 = string[]["push"]  // (...items: string[]) => number
+type P5 = string[][0]  // string
 ```
 
 # Optional Chaining
@@ -561,11 +561,30 @@ function tryGetFirstElement<T>(arr?: T[]) {
 }
 ```
 
-- Optional Call
+- `Optional Call`
 
 *optional call*, which allows us to conditionally call expressions if they’re not `null` or `undefined`.
 
-- Short-circutting
+```ts
+async function makeRequest(url: string, log?: (msg: string) => void) {
+
+    log?.(`Request started at ${new Date().toISOString()}`)
+
+    // roughly equivalent to
+    //   if (log != null) {
+    //       log(`Request started at ${new Date().toISOString()}`)
+    //   }
+
+    const result = (await fetch(url)).json()
+
+    log?.(`Request finished at at ${new Date().toISOString()}`)
+
+    return result
+}
+
+```
+
+- `Short-circutting`
 
 The *short-circuiting* behavior that optional chains have is limited property accesses, calls, element accesses - it doesn’t expand any further out from these expressions.
 
