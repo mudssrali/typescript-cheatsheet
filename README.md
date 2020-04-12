@@ -24,6 +24,11 @@
   - [`typeof` / `keyof` Examples](#typeof--keyof-examples)
   - [`keyof` with Generics and Interfaces Example](#keyof-with-generics-and-interfaces-example)
   - [`Lookup` Types](#lookup-types)
+- [Immutability](#immutability)
+  - [`readonly` Properties](#readonly-properties)
+  - [`readonly` Class Properties](#readonly-class-properties)
+  - [`readonly` Array / Tuple](#readonly-array--tuple)
+  - [`const` Assertions](#const-assertions)
 - [Optional Chaining](#optional-chaining)
   - [`?.` returns `undefined` when hitting a `null` or `undefined`](#-returns-undefined-when-hitting-a-null-or-undefined)
 - [Nullish Coalescing](#nullish-coalescing)
@@ -500,6 +505,152 @@ type P3 = string["charAt"]  // (pos: number) => string
 type P4 = string[]["push"]  // (...items: string[]) => number
 type P5 = string[][0]  // string
 ```
+
+# Immutability
+
+## `readonly` Properties
+
+Properties marked with `readonly` can only be assigned to during initialization
+or from within a constructor of the same class.
+
+```ts
+type Point = {
+  readonly x: number
+  readonly y: number
+}
+
+const origin: Point = { x: 0, y: 0 } // OK
+origin.x = 100 // Error
+
+function moveX(p: Point, offset: number): Point {
+  p.x += offset // Error
+  return p
+}
+
+function moveX(p: Point, offset: number): Point {
+  // OK
+  return {
+    x: p.x + offset,
+    y: p.y
+  }
+}
+```
+
+## `readonly` Class Properties
+
+Gettable area property is implicitly read-only because there’s no setter:
+
+```ts
+class Circle {
+  readonly radius: number;
+
+  constructor(radius: number) {
+    this.radius = radius;
+  }
+
+  get area() {
+    return Math.PI * this.radius ** 2;
+  }
+}
+```
+
+## `readonly` Array / Tuple
+
+Here are different usecases of readonly
+
+- readonly property
+
+  ```ts
+  interface Apple {
+    readonly types: string[]
+    readonly origin: [string, string]
+  }
+
+  const apple: Apple = {
+    types: ["Asian", "American", "European"]
+    origin: ["Local", "Home Grown"]
+  }
+
+  apple.types.push("Russian") // OK, array is now mutable
+  ```
+
+- property has readonly type
+
+  ```ts
+  interface Apple {
+    types: readonly string[]
+    origin: readonly [string, string]
+  }
+
+  const apple: Apple = {
+    types: ["Asian", "American", "European"]
+    origin: ["Local", "Home Grown"]
+  }
+
+  apple.types.push("Russian") // Error, Property `push` does not exist on type 'readonly string[]'
+  ```
+
+- Variable declaration with readonly
+
+  ```ts
+  const array: readonly string[]
+  const tuple: readonly [string, string]
+  ```
+
+## `const` Assertions
+
+- `number` becomes number literal
+
+  ```ts
+  // Type '10'
+  let num = 10 as const
+  ```
+
+- array literals become `readonly` tuples
+
+  ```ts
+  // Type 'readonly [10, 20]'
+  let tuple = [10, 20] as const
+  ```
+
+- object literals get `readonly` properties
+- no literal types in that expression should be widened (e.g. no going from `"hello"` to `string`)
+
+  ```ts
+  // Type '{ readonly text: "hello" }'
+  let input = { text: "hello" } as const
+
+- object literals with array types becomes also readonly
+
+  ```ts
+  // Type `{ readonly types: readonly ["A", "B"]}`
+  let apple = { types: ["A", "B"] } as const
+
+  apple.types = ["C"] // Error, 'types' is readonly, we can't reassign
+  apple.push("C") // Error, Property 'push' does not exist on type 'readonly ["A", "B", "C"]'
+  ```
+
+- ⛔ `const` contexts **don’t** immediately convert an expression to be fully `immutable`.
+
+  ```ts
+  let types = ["Asian", "European"]
+
+  let apple = {
+    name: "Green Apple",
+    types: types
+  } as const
+
+  apple.name = "Red Apple" // Error
+  apple.types = ["American"] // Error
+
+  aaple.types.push("African") // OK
+  
+  // to fix above, just do this little trick
+
+  let types = ["Asian", "European"] as const
+  // OR
+  let types: readonly string[] = ["Asian", "European"]
+  ```
 
 # Optional Chaining
 
