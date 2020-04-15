@@ -38,6 +38,12 @@
   - [`never`](#never)
   - [`unknown`](#unknown)
     - [Reading `JSON` from `localStorage` using `unknown` Example](#reading-json-from-localstorage-using-unknown-example)
+- [Generics](#generics)
+  - [With and Without Type Argument Inference](#with-and-without-type-argument-inference)
+  - [Working with Generic Type Variables](#working-with-generic-type-variables)
+  - [Using More Than One Type Argument](#using-more-than-one-type-argument)
+  - [Higher Order Function with `Parameters<T>` and `ReturnType<T>`](#higher-order-function-with-parameterst-and-returntypet)
+  - [Working With Classes](#working-with-classes)
 
 - [Optional Chaining](#optional-chaining)
   - [`?.` returns `undefined` when hitting a `null` or `undefined`](#-returns-undefined-when-hitting-a-null-or-undefined)
@@ -900,6 +906,113 @@ function tryDeserializeLocalStorageItem(key: string): Result {
     value
   }
 }
+```
+
+# Generics
+
+Generics enable you to create reusable code components that work with a number
+of types instead of a single type.
+
+## With and Without Type Argument Inference
+
+```ts
+function identity<T>(arg: T): T {
+  return arg
+}
+
+let output = identity<string>("myString") // type of output will be 'string'
+let output = identity("myString") // type argument inference
+            // compiler sets the value of `T` based on the type of the argument we pass in
+```
+
+## Working with Generic Type Variables
+
+```ts
+function loggingIdentity<T>(arg: T): T {
+    console.log(arg.length)  // Error: T doesn't have .length
+    return arg
+}
+
+// to specify .length property we should make generic T to T[] or Array<T>
+
+function loggingIdentity<T>(arg: Array<T>): Array<T> {
+    console.log(arg.length)  // Array has a .length, so no more error
+    return arg
+}
+
+```
+
+## Using More Than One Type Argument
+
+No value arguments are needed in this case:
+
+```ts
+function makePair<F, S>() {
+  let pair: { first: F; second: S }
+
+  function getPair() {
+    return pair
+  }
+
+  function setPair(x: F, y: S) {
+    pair = {
+      first: x,
+      second: y
+    }
+  }
+  return { getPair, setPair }
+}
+
+// Creates a (number, string) pair
+const { getPair, setPair } = makePair<number, string>();
+
+setPair(1, "y") // must be type of (number, string)
+getPair() // will return pair of type { number, string }
+
+```
+
+## Higher Order Function with `Parameters<T>` and `ReturnType<T>`
+
+```ts
+// Input a function `<T extends (...args: any[]) => any>`
+// Output a function with same params and return type `:(...funcArgs: Parameters<T>) => ReturnType<T>`
+
+function logDuration<T extends (...args: any[]) => any>(func: T) {
+  const funcName = func.name;
+
+  // Return a new function that tracks how long the original took
+  return (...args: Parameters<T>): ReturnType<T> => {
+    console.time(funcName)
+    const results = func(...args)
+    console.timeEnd(funcName)
+    return results
+  }
+}
+
+function addNumbers(a: number, b: number): number {
+  return a + b
+}
+// Hover over is `addNumbersWithLogging: (a: number, b: number) => number`
+const addNumbersWithLogging = logDuration(addNumbers)
+
+addNumbersWithLogging(5, 3)
+
+```
+
+A generic class has a similar shape to a generic interface. Generic classes have a generic type parameter list in angle brackets (`<>`) following the name of the class.
+
+```ts
+
+class GenericNumber<T> {
+    zeroValue: T;
+    add: (x: T, y: T) => T
+}
+
+let myGenericNumber = new GenericNumber<number>()
+
+myGenericNumber.zeroValue = 0
+myGenericNumber.add = function(x, y) { return x + y }
+
 ```
 
 # Optional Chaining
