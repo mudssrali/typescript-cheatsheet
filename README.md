@@ -1144,4 +1144,6 @@ function initializeAudio() {
 
 **[Original and Inspiration](https://github.com/David-Else/modern-typescript-with-examples-cheat-sheet)** by @David-Else
 
+[:arrow_up: Back to top](#easy-cheatsheet-to-learn-modern-typescript)
+
 **[MIT-LICENSE](./LICENSE)**
