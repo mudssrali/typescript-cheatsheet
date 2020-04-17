@@ -517,6 +517,9 @@ interface Person {
 
 type P1 = Person["name"]  // string
 type P2 = Person["name" | "age"]  // string | number
+
+// typing from string operations
+
 type P3 = string["charAt"]  // (pos: number) => string
 type P4 = string[]["push"]  // (...items: string[]) => number
 type P5 = string[][0]  // string
@@ -1142,8 +1145,14 @@ function initializeAudio() {
 
 </article>
 
-**[Original and Inspiration](https://github.com/David-Else/modern-typescript-with-examples-cheat-sheet)** by @David-Else
-
 [:arrow_up: Back to top](#easy-cheatsheet-to-learn-modern-typescript)
+
+Thanks goes to these people for great examples:
+
+- [Typescript Lang Organization](https://www.typescriptlang.org/)
+- [David-Else](http://github.com/David-Else)
+- [Marius Schulz](https://github.com/mariusschulz)
+- [Shu Uesugi](https://github.com/chibicode)
+- [Axel Rauschmayer](https://github.com/rauschma)
 
 **[MIT-LICENSE](./LICENSE)**
