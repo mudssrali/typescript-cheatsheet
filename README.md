@@ -29,6 +29,10 @@
   - [`readonly` Class Properties](#readonly-class-properties)
   - [`readonly` Array / Tuple](#readonly-array--tuple)
   - [`const` Assertions](#const-assertions)
+- [Strict Mode](#strict-mode)
+  - [Non-Nullable Types `--strictNullChecks`](#non-nullable-types---strictnullchecks)
+  - [Strict Bind Call Apply `--strictBindCallApply`](#strict-bind-call-apply---strictbindcallapply)
+  - [Strict Class Property Initialization `--strictPropertyInitialization`](#strict-class-property-initialization---strictpropertyinitialization)
 - [Optional Chaining](#optional-chaining)
   - [`?.` returns `undefined` when hitting a `null` or `undefined`](#-returns-undefined-when-hitting-a-null-or-undefined)
 - [Nullish Coalescing](#nullish-coalescing)
@@ -651,6 +655,181 @@ Here are different usecases of readonly
   // OR
   let types: readonly string[] = ["Asian", "European"]
   ```
+
+# Strict Mode
+
+```json
+  strict: true /* Enable all strict type-checking options. */
+```
+
+is equivalent to enabling all of the strict mode family options:
+
+```json
+  noImplicitAny: true /* Raise error on expressions and declarations with an implied 'any' type */,
+  strictNullChecks: true /* Enable strict null checks */,
+  strictFunctionTypes: true /* Enable strict checking of function types */,
+  strictBindCallApply: true /* Enable strict 'bind', 'call', and 'apply' methods on functions */,
+  strictPropertyInitialization: true /* Enable strict checking of property initialization in classes */,
+  noImplicitThis: true /* Raise error on 'this' expressions with an implied 'any' type */,
+  alwaysStrict: true /* Parse in strict mode and emit "use strict" for each source file */
+```
+
+You can then turn off individual strict mode family checks as needed.
+
+## Non-Nullable Types `--strictNullChecks`
+
+In strict null checking mode, `null` and `undefined` are no longer assignable to
+every type.
+
+```ts
+let name: string
+name = "Marius" // OK
+name = null // Error
+name = undefined // Error
+```
+
+```ts
+let name: string | null
+name = "Marius" // OK
+name = null // OK
+name = undefined // Error
+```
+
+Optional parameter `?` automatically adds `| undefined`
+
+```ts
+type User = {
+  firstName: string
+  lastName?: string // same as `string | undefined`
+}
+```
+
+- In JavaScript, every function parameter is optional, when left off their value
+  is `undefined`.
+- We can get this functionality in TypeScript by adding a `?` to the end of
+  parameters we want to be optional. This is different from adding `| undefined`
+  which requires the parameter to be explicitly passed as `undefined`
+
+```ts
+function fn1(x: number | undefined): void {
+  ...
+}
+
+function fn2(x?: number): void {
+  ...
+}
+
+fn1() // Error
+fn2() // OK
+fn1(undefined) // OK
+fn2(undefined) // OK
+```
+
+Type guard needed to check if Object is possibly `null`:
+
+```ts
+function getLength(s: string | null) {
+  // Error: Object is possibly 'null'.
+  return s.length
+}
+```
+
+```ts
+function getLength(s: string | null) {
+  if (s === null) {
+    return 0
+  }
+  return s.length
+}
+
+// JS's truthiness semantics support type guards in conditional expressions
+function getLength(s: string | null) {
+  return s ? s.length : 0
+}
+```
+
+```ts
+function doSomething(callback?: () => void) {
+  // Error: Object is possibly 'undefined'.
+  callback()
+}
+```
+
+```ts
+function doSomething(callback?: () => void) {
+  if (typeof callback === "function") {
+    callback()
+  }
+}
+```
+
+## Strict Bind Call Apply `--strictBindCallApply`
+
+> The `call()` method calls a function with a given `this` value and arguments
+> provided individually, while `apply()` accepts a single array of arguments.
+>
+> The `bind()` method creates a new function that, when called, has its `this`
+> keyword set to the provided value.
+
+When set, TypeScript will check that the built-in methods of functions `call`,
+`bind`, and `apply` are invoked with correct argument for the underlying
+function:
+
+```ts
+// With strictBindCallApply on
+function fn(x: string) {
+  return parseInt(x)
+}
+
+const n1 = fn.call(undefined, "10") // OK
+const n2 = fn.call(undefined, false) // Argument of type 'false' is not assignable to parameter of type 'string'.
+```
+
+## Strict Class Property Initialization `--strictPropertyInitialization`
+
+Verify that each instance property declared in a class either:
+
+- Has an explicit initializer, or
+- Is definitely assigned to in the constructor
+
+```ts
+// Error
+class User {
+  // Type error: Property 'username' has no initializer
+  // and is not definitely assigned in the constructor
+  username: string
+}
+
+// OK
+class User {
+  username = "n/a"
+}
+
+const user = new User()
+const username = user.username.toLowerCase()
+
+// OK
+class User {
+  constructor(public username: string) {}
+}
+
+const user = new User("adam")
+const username = user.username.toLowerCase()
+```
+
+- Has a type that includes undefined
+
+```ts
+class User {
+  username: string | undefined
+}
+
+const user = new User()
+
+// Whenever we want to use the username property as a string, though, we first have to make sure that it actually holds a string and not the value undefined
+const username =
+  typeof user.username === "string" ? user.username.toLowerCase() : "n/a"
+```
 
 # Optional Chaining
 
