@@ -33,6 +33,12 @@
   - [Non-Nullable Types `--strictNullChecks`](#non-nullable-types---strictnullchecks)
   - [Strict Bind Call Apply `--strictBindCallApply`](#strict-bind-call-apply---strictbindcallapply)
   - [Strict Class Property Initialization `--strictPropertyInitialization`](#strict-class-property-initialization---strictpropertyinitialization)
+
+- [Types](#types)
+  - [`never`](#never)
+  - [`unknown`](#unknown)
+    - [Reading `JSON` from `localStorage` using `unknown` Example](#reading-json-from-localstorage-using-unknown-example)
+
 - [Optional Chaining](#optional-chaining)
   - [`?.` returns `undefined` when hitting a `null` or `undefined`](#-returns-undefined-when-hitting-a-null-or-undefined)
 - [Nullish Coalescing](#nullish-coalescing)
@@ -826,9 +832,74 @@ class User {
 
 const user = new User()
 
-// Whenever we want to use the username property as a string, though, we first have to make sure that it actually holds a string and not the value undefined
-const username =
-  typeof user.username === "string" ? user.username.toLowerCase() : "n/a"
+// Whenever we want to use the username property as a string, we first have
+// to make sure that it actually holds a string, not the value undefined
+const username = typeof user.username === "string" ? user.username.toLowerCase() : "n/a"
+```
+
+# Types
+
+## `never`
+
+`never` represents the type of values that never occur. It is used in the
+following two places:
+
+- As the return type of functions that never return
+- As the type of variables under type guards that are never true
+
+`never` can be used in control flow analysis:
+
+```ts
+function controlFlowAnalysisWithNever(value: string | number) {
+  if (typeof value === "string") {
+    value // Type string
+  } else if (typeof value === "number") {
+    value // Type number
+  } else {
+    value // Type never
+  }
+}
+```
+
+## `unknown`
+
+`unknown` is the type-safe counterpart of the `any` type: we have to do some
+form of checking before performing most operations on values of type `unknown`.
+
+### Reading `JSON` from `localStorage` using `unknown` Example
+
+```ts
+type Result = { success: true; value: unknown } | { success: false; error: Error }
+
+function tryDeserializeLocalStorageItem(key: string): Result {
+  const item = localStorage.getItem(key)
+
+  if (item === null) {
+    // The item does not exist, thus return an error result
+    return {
+      success: false,
+      error: new Error(`Item with key "${key}" does not exist`)
+    }
+  }
+
+  let value: unknown
+
+  try {
+    value = JSON.parse(item);
+  } catch (error) {
+    // The item is not valid JSON, thus return an error result
+    return {
+      success: false,
+      error
+    }
+  }
+
+  // Everything's fine, thus return a success result
+  return {
+    success: true,
+    value
+  }
+}
 ```
 
 # Optional Chaining
