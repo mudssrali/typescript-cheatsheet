@@ -33,7 +33,6 @@
   - [Non-Nullable Types `--strictNullChecks`](#non-nullable-types---strictnullchecks)
   - [Strict Bind Call Apply `--strictBindCallApply`](#strict-bind-call-apply---strictbindcallapply)
   - [Strict Class Property Initialization `--strictPropertyInitialization`](#strict-class-property-initialization---strictpropertyinitialization)
-
 - [Types](#types)
   - [`never`](#never)
   - [`unknown`](#unknown)
@@ -44,7 +43,7 @@
   - [Using More Than One Type Argument](#using-more-than-one-type-argument)
   - [Higher Order Function with `Parameters<T>` and `ReturnType<T>`](#higher-order-function-with-parameterst-and-returntypet)
   - [Working With Classes](#working-with-classes)
-
+- [Discriminated Unions](#discriminated-unions)
 - [Optional Chaining](#optional-chaining)
   - [`?.` returns `undefined` when hitting a `null` or `undefined`](#-returns-undefined-when-hitting-a-null-or-undefined)
 - [Nullish Coalescing](#nullish-coalescing)
@@ -1018,6 +1017,39 @@ myGenericNumber.add = function(x, y) { return x + y }
 
 ```
 
+# Discriminated Unions
+
+Discriminated Unions provide a powerful pattern in TypeScript. Immensely useful for actions & reducers in ngrx/redux, and every time you have to distinguish between "kinds" of objects. They enable type inference which, combined with strict null checks, will catch a lot of bugs! [By Minko Gechev](https://twitter.com/mgechev/status/1255021510563115008)
+
+```ts
+const enum Entity {
+  Individual, Corporation
+}
+
+interface Individual {
+  type: Entity.Individual
+  ssn: string
+}
+
+interface Corporation {
+  type: Entity.Corporation
+  ein: string
+}
+
+type TaxPayer = Individual | Corporation
+
+function majic(payer: TaxPayer) {
+  if(payer.type === Entity.Individual){
+    taxIdentifier(payer.ssn)
+    taxIdentifier(payer.ein) // Property 'ein' does not exist on type 'Individual'
+  } else {
+    taxIdentifier(payer.ein)
+    taxIdentifier(payer.ssn) // Property 'ssn' doesn't exist on type 'Corporation'
+  }
+}
+
+```
+
 # Optional Chaining
 
 ## `?.` returns `undefined` when hitting a `null` or `undefined`
@@ -1154,5 +1186,6 @@ Thanks goes to these people for great examples:
 - [Marius Schulz](https://github.com/mariusschulz)
 - [Shu Uesugi](https://github.com/chibicode)
 - [Axel Rauschmayer](https://github.com/rauschma)
+- [Minko Gechev](https://github.com/mgechev)
 
 **[MIT-LICENSE](./LICENSE)**
