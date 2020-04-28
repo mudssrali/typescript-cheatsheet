@@ -1019,7 +1019,7 @@ myGenericNumber.add = function(x, y) { return x + y }
 
 # Discriminated Unions
 
-Discriminated Unions provide a powerful pattern in TypeScript. Immensely useful for actions & reducers in ngrx/redux, and every time you have to distinguish between "kinds" of objects. They enable type inference which, combined with strict null checks, will catch a lot of bugs! [By Minko Gechev](https://twitter.com/mgechev/status/1255021510563115008)
+Discriminated Unions provide a powerful pattern in TypeScript. Immensely useful for actions & reducers in `ngrx/redux`, and every time you have to distinguish between `kinds` of objects. They enaWtype inference which, combined with strict null checks, will catch a lot of bugs! [By Minko Gechev](https://twitter.com/mgechev/status/1255021510563115008)
 
 ```ts
 const enum Entity {
@@ -1038,7 +1038,7 @@ interface Corporation {
 
 type TaxPayer = Individual | Corporation
 
-function majic(payer: TaxPayer) {
+function magic(payer: TaxPayer) {
   if(payer.type === Entity.Individual){
     taxIdentifier(payer.ssn)
     taxIdentifier(payer.ein) // Property 'ein' does not exist on type 'Individual'
