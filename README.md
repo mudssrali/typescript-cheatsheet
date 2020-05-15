@@ -48,6 +48,9 @@
   - [`?.` returns `undefined` when hitting a `null` or `undefined`](#-returns-undefined-when-hitting-a-null-or-undefined)
 - [Nullish Coalescing](#nullish-coalescing)
   - [`??` 'fall Backs' to a Default Value When Dealing with `null` or `undefined`](#-fall-backs-to-a-default-value-when-dealing-with-null-or-undefined)
+- [Comments](#comments)
+  - [ts-expect-error - 3.9](#ts-expect-error---3.9)
+  - [`ts-expect-error` vs `ts-ignore`](#ts-expect-error-vs-ts-ignore)
 
 # Typing Objects
 
@@ -503,8 +506,6 @@ const due = prop(todo, "due")   // Date
 
 ```
 
-[Article Link](https://mariusschulz.com/blog/keyof-and-lookup-types-in-typescript)
-
 ## Lookup Types
 
 ```ts
@@ -523,6 +524,13 @@ type P3 = string["charAt"]  // (pos: number) => string
 type P4 = string[]["push"]  // (...items: string[]) => number
 type P5 = string[][0]  // string
 ```
+
+Article Links:
+
+- [Keyof and Lookup by Marius Schulz](https://mariusschulz.com/blog/keyof-and-lookup-types-in-typescript)
+- [More Read about Mapped Types](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-1.html#mapped-types)
+
+- [More Read about Keyof and Lookup Types](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-1.html#keyof-and-lookup-types)
 
 # Immutability
 
@@ -1172,8 +1180,37 @@ function initializeAudio() {
 }
 ```
 
-[More Read about Mapped Types](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-1.html#mapped-types)
-[More Read about Keyof and Lookup Types](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-1.html#keyof-and-lookup-types)
+# Comments
+
+## ts-expect-error - 3.9
+
+TypeScript 3.9 brings a new feature: `// @ts-expect-error` comments. When a line is prefixed with a `// @ts-expect-error` comment, TypeScript will suppress that error from being reported; but if there’s no error, TypeScript will report that `// @ts-expect-error` wasn’t necessary.
+
+```ts
+// @ts-expect-error
+console.log(47 * "octopus") // OK, no problem here
+
+// @ts-expect-error
+console.log(1 + 1) // Unused '@ts-expect-error' directive.
+```
+
+## ts-expect-error vs ts-ignore
+
+In some ways `// @ts-expect-error` can act as a suppression comment, similar to `// @ts-ignore`. The difference is that `// @ts-ignore` will do nothing if the following line is error-free.
+
+You might be tempted to switch existing `// @ts-ignore` comments over to `// @ts-expect-error`, and you might be wondering which is appropriate for future code. While it’s entirely up to you and your team, we have some ideas of which to pick in certain situations.
+
+**Pick `ts-expect-error` if**:
+
+- you’re writing test code where you actually want the type system to error on an operation
+- you expect a fix to be coming in fairly quickly and you just need a quick workaround
+- you’re in a reasonably-sized project with a proactive team that wants to remove suppression comments as soon affected code is valid again
+
+**Pick `ts-ignore` if**:
+
+- you have an a larger project and and new errors have appeared in code with no clear owner
+- you are in the middle of an upgrade between two different versions of TypeScript, and a line of code errors in one version but not another.
+- you honestly don’t have the time to decide which of these options is better
 
 </article>
 
