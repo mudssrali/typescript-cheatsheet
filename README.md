@@ -37,6 +37,7 @@
   - [`never`](#never)
   - [`unknown`](#unknown)
     - [Reading `JSON` from `localStorage` using `unknown` Example](#reading-json-from-localstorage-using-unknown-example)
+  - [`awaited` - comming soon](#awaited---comming-soon)
 - [Generics](#generics)
   - [With and Without Type Argument Inference](#with-and-without-type-argument-inference)
   - [Working with Generic Type Variables](#working-with-generic-type-variables)
@@ -49,7 +50,7 @@
 - [Nullish Coalescing](#nullish-coalescing)
   - [`??` 'fall Backs' to a Default Value When Dealing with `null` or `undefined`](#-fall-backs-to-a-default-value-when-dealing-with-null-or-undefined)
 - [Comments](#comments)
-  - [ts-expect-error - 3.9](#ts-expect-error---3.9)
+  - [ts-expect-error - 3.9](#ts-expect-error---39)
   - [`ts-expect-error` vs `ts-ignore`](#ts-expect-error-vs-ts-ignore)
 
 # Typing Objects
