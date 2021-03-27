@@ -7,52 +7,6 @@
   </a>
 </p>
 
-# Quick Links
-
-<article class="markdown-body">
-
--   [Typing Objects](#typing-objects)
-    -   [`Object` vs `object`](#object-vs-object)
-    -   [Interface Signatures Overview](#interface-signatures-overview)
-        -   [Index Signature](#index-signature)
-        -   [Call Signature](#call-signature)
-        -   [Construct Signature](#construct-signature)
-    -   [Type Literal Syntax](#type-literal-syntax)
-    -   [Excess Properties](#excess-properties)
-    -   [`interface` vs `type`](#interface-vs-type)
--   [Mapped Types - Getting Types from Data](#mapped-types---getting-types-from-data)
-    -   [`typeof` / `keyof` Examples](#typeof--keyof-examples)
-    -   [`keyof` with Generics and Interfaces Example](#keyof-with-generics-and-interfaces-example)
-    -   [`Lookup` Types](#lookup-types)
--   [Immutability](#immutability)
-    -   [`readonly` Properties](#readonly-properties)
-    -   [`readonly` Class Properties](#readonly-class-properties)
-    -   [`readonly` Array / Tuple](#readonly-array--tuple)
-    -   [`const` Assertions](#const-assertions)
--   [Strict Mode](#strict-mode)
-    -   [Non-Nullable Types `--strictNullChecks`](#non-nullable-types---strictnullchecks)
-    -   [Strict Bind Call Apply `--strictBindCallApply`](#strict-bind-call-apply---strictbindcallapply)
-    -   [Strict Class Property Initialization `--strictPropertyInitialization`](#strict-class-property-initialization---strictpropertyinitialization)
--   [Types](#types)
-    -   [`never`](#never)
-    -   [`unknown`](#unknown)
-        -   [Reading `JSON` from `localStorage` using `unknown` Example](#reading-json-from-localstorage-using-unknown-example)
-    -   [`awaited` - comming soon](#awaited---comming-soon)
--   [Generics](#generics)
-    -   [With and Without Type Argument Inference](#with-and-without-type-argument-inference)
-    -   [Working with Generic Type Variables](#working-with-generic-type-variables)
-    -   [Using More Than One Type Argument](#using-more-than-one-type-argument)
-    -   [Higher Order Function with `Parameters<T>` and `ReturnType<T>`](#higher-order-function-with-parameterst-and-returntypet)
-    -   [Working With Classes](#working-with-classes)
--   [Discriminated Unions](#discriminated-unions)
--   [Optional Chaining](#optional-chaining)
-    -   [`?.` returns `undefined` when hitting a `null` or `undefined`](#-returns-undefined-when-hitting-a-null-or-undefined)
--   [Nullish Coalescing](#nullish-coalescing)
-    -   [`??` 'fall Backs' to a Default Value When Dealing with `null` or `undefined`](#-fall-backs-to-a-default-value-when-dealing-with-null-or-undefined)
--   [Comments](#comments)
-    -   [ts-expect-error - 3.9](#ts-expect-error---39)
-    -   [`ts-expect-error` vs `ts-ignore`](#ts-expect-error-vs-ts-ignore)
-
 # Typing Objects
 
 ## `Object` vs `object`
