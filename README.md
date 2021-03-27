@@ -1170,6 +1170,15 @@ You might be tempted to switch existing `// @ts-ignore` comments over to `// @ts
 -   you are in the middle of an upgrade between two different versions of TypeScript, and a line of code errors in one version but not another.
 -   you honestly don’t have the time to decide which of these options is better
 
+# TS 4.0 - 4.2
+
+- [ ] Short-Circuiting Assignment Operators
+- [ ] Template Literal Types
+- [ ] Key Remapping in Mapped Types
+- [ ] Checked Indexed Accesses (--noUncheckedIndexedAccess)
+- [ ] Paths without baseUrl
+- [ ] Destructured Variables Can Be Explicitly Marked as Unused
+
 </article>
 
 [:arrow_up: Back to top](#easy-cheatsheet-to-learn-modern-typescript)
