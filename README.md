@@ -1170,7 +1170,7 @@ You might be tempted to switch existing `// @ts-ignore` comments over to `// @ts
 -   you are in the middle of an upgrade between two different versions of TypeScript, and a line of code errors in one version but not another.
 -   you honestly don’t have the time to decide which of these options is better
 
-# TS 4.0 - 4.2
+## TS 4.0 - 4.2
 
 - [ ] Short-Circuiting Assignment Operators
 - [ ] Template Literal Types
@@ -1178,6 +1178,13 @@ You might be tempted to switch existing `// @ts-ignore` comments over to `// @ts
 - [ ] Checked Indexed Accesses (--noUncheckedIndexedAccess)
 - [ ] Paths without baseUrl
 - [ ] Destructured Variables Can Be Explicitly Marked as Unused
+
+## TS 4.3 - 4.4
+
+- [ ] (Template String Type Improvements)
+- [ ] (Editor Support for @link Tags)
+- [ ] (Go-to-Definition on Non-JavaScript File Paths)
+- [ ] (Inlay Hints)
 
 </article>
 
