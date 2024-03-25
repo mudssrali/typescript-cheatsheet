@@ -1186,6 +1186,10 @@ You might be tempted to switch existing `// @ts-ignore` comments over to `// @ts
 - [ ] (Go-to-Definition on Non-JavaScript File Paths)
 - [ ] (Inlay Hints)
 
+## TS 4.5 - 5.4
+
+> Will update soon
+
 </article>
 
 [:arrow_up: Back to top](#easy-cheatsheet-to-learn-modern-typescript)
